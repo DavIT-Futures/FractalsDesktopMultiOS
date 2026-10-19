@@ -27,7 +27,7 @@ public partial class MainWindow : Window
 
     private void SetupEvents()
     {
-        btnStart.Click += async (_, _) => await GenerateTriangleAsync();
+        btnStart.Click += async (_, _) => await GenerateFractalAsync();
         btnReset.Click += BtnReset_Click;
         btnSave.Click += BtnSave_Click;
 
@@ -40,8 +40,8 @@ public partial class MainWindow : Window
     private void MainWindow_Loaded(object? sender, RoutedEventArgs e)
     {
         UpdateParamBounds();
-        // Inicjalne automatyczne wygenerowanie fraktala
-        _ = GenerateTriangleAsync();
+        // Initial automatic fractal rendering
+        _ = GenerateFractalAsync();
     }
 
     private void CmbMethod_SelectionChanged(object? sender, SelectionChangedEventArgs e)
@@ -57,8 +57,8 @@ public partial class MainWindow : Window
         int methodIndex = cmbMethod.SelectedIndex;
         if (methodIndex == 0 || methodIndex == 1)
         {
-            // Rekurencja
-            lblParamName.Text = "Głębokość rekurencji (0 - 9):";
+            // Recursion
+            lblParamName.Text = "Recursion depth (0 - 9):";
             sliderParam.Minimum = 0;
             sliderParam.Maximum = 9;
             sliderParam.TickFrequency = 1;
@@ -69,8 +69,8 @@ public partial class MainWindow : Window
         }
         else
         {
-            // Gra Chaosu
-            lblParamName.Text = "Liczba punktów:";
+            // Chaos Game
+            lblParamName.Text = "Number of points:";
             sliderParam.Minimum = 5000;
             sliderParam.Maximum = 1000000;
             sliderParam.TickFrequency = 5000;
@@ -142,8 +142,8 @@ public partial class MainWindow : Window
             }
 
             imgCanvas.InvalidateVisual();
-            txtStatus.Text = "Wyczyszczono obszar roboczy.";
-            txtStats.Text = "Wymiary: - | Czas: -";
+            txtStatus.Text = "Canvas cleared.";
+            txtStats.Text = "Resolution: - | Elapsed: -";
         }
     }
 
@@ -151,7 +151,7 @@ public partial class MainWindow : Window
     {
         if (_bitmap == null)
         {
-            txtStatus.Text = "Brak wygenerowanego obrazu do zapisania.";
+            txtStatus.Text = "No generated image to save.";
             return;
         }
 
@@ -160,12 +160,12 @@ public partial class MainWindow : Window
 
         var file = await topLevel.StorageProvider.SaveFilePickerAsync(new FilePickerSaveOptions
         {
-            Title = "Zapisz obraz fraktala (PNG)",
+            Title = "Save Fractal Image (PNG)",
             DefaultExtension = "png",
             SuggestedFileName = "FractalsDesktopMultiOS_Sierpinski.png",
             FileTypeChoices = new[]
             {
-                new FilePickerFileType("Pliki graficzne PNG (*.png)") { Patterns = new[] { "*.png" } }
+                new FilePickerFileType("PNG Image Files (*.png)") { Patterns = new[] { "*.png" } }
             }
         });
 
@@ -177,16 +177,16 @@ public partial class MainWindow : Window
 #pragma warning disable CS0618
                 _bitmap.Save(stream);
 #pragma warning restore CS0618
-                txtStatus.Text = "Obraz został pomyślnie zapisany!";
+                txtStatus.Text = "Image saved successfully!";
             }
             catch (Exception ex)
             {
-                txtStatus.Text = $"Błąd podczas zapisu: {ex.Message}";
+                txtStatus.Text = $"Error saving image: {ex.Message}";
             }
         }
     }
 
-    private async Task GenerateTriangleAsync()
+    private async Task GenerateFractalAsync()
     {
         if (_isGenerating) return;
 
@@ -195,7 +195,7 @@ public partial class MainWindow : Window
             _isGenerating = true;
             btnStart.IsEnabled = false;
             progressBar.IsVisible = true;
-            txtStatus.Text = "Trwa generowanie fraktala...";
+            txtStatus.Text = "Generating fractal...";
 
             int width = (int)canvasContainer.Bounds.Width;
             int height = (int)canvasContainer.Bounds.Height;
@@ -215,7 +215,7 @@ public partial class MainWindow : Window
             {
                 byte[] pixels = new byte[width * height * 4];
 
-                // Wypełnienie kolorem tła
+                // Fill background color
                 for (int i = 0; i < pixels.Length; i += 4)
                 {
                     pixels[i] = bgColor.B;
@@ -224,7 +224,7 @@ public partial class MainWindow : Window
                     pixels[i + 3] = 255;
                 }
 
-                // Obliczenie wierzchołków trójkąta z zachowaniem proporcji
+                // Calculate main equilateral triangle vertices
                 double margin = 30;
                 double triangleHeight = height - margin * 2;
                 double triangleWidth = triangleHeight * 2.0 / Math.Sqrt(3);
@@ -235,9 +235,9 @@ public partial class MainWindow : Window
                     triangleHeight = triangleWidth * Math.Sqrt(3) / 2.0;
                 }
 
-                PointD p1 = new PointD(width / 2.0, (height - triangleHeight) / 2.0); // Wierzchołek górny
-                PointD p2 = new PointD(p1.X - triangleWidth / 2.0, p1.Y + triangleHeight); // Lewy dolny
-                PointD p3 = new PointD(p1.X + triangleWidth / 2.0, p1.Y + triangleHeight); // Prawy dolny
+                PointD p1 = new PointD(width / 2.0, (height - triangleHeight) / 2.0); // Top vertex
+                PointD p2 = new PointD(p1.X - triangleWidth / 2.0, p1.Y + triangleHeight); // Bottom left
+                PointD p3 = new PointD(p1.X + triangleWidth / 2.0, p1.Y + triangleHeight); // Bottom right
 
                 int count = 0;
 
@@ -259,7 +259,7 @@ public partial class MainWindow : Window
 
             sw.Stop();
 
-            // Przepisanie bufora do WriteableBitmap Avalonia
+            // Copy pixel buffer into Avalonia WriteableBitmap
             var pixelSize = new PixelSize(width, height);
             var dpi = new Vector(96, 96);
             _bitmap = new WriteableBitmap(pixelSize, dpi, PixelFormat.Bgra8888, AlphaFormat.Premul);
@@ -270,12 +270,12 @@ public partial class MainWindow : Window
             }
 
             imgCanvas.Source = _bitmap;
-            txtStatus.Text = "Generowanie zakończone pomyślnie!";
-            txtStats.Text = $"Wymiary: {width}x{height} px | Elementy: {elementCount:N0} | Czas: {sw.ElapsedMilliseconds} ms";
+            txtStatus.Text = "Generation completed successfully!";
+            txtStats.Text = $"Resolution: {width}x{height} px | Elements: {elementCount:N0} | Elapsed: {sw.ElapsedMilliseconds} ms";
         }
         catch (Exception ex)
         {
-            txtStatus.Text = $"Błąd podczas generowania: {ex.Message}";
+            txtStatus.Text = $"Error during generation: {ex.Message}";
         }
         finally
         {
@@ -291,11 +291,11 @@ public partial class MainWindow : Window
         {
             1 => Colors.White,
             2 => Color.FromRgb(13, 17, 23), // Midnight Navy
-            _ => Color.FromRgb(9, 9, 10)     // Ciemne tło
+            _ => Color.FromRgb(9, 9, 10)     // Smoky Black
         };
     }
 
-    // --- Algorytmy Rysowania Trójkąta Sierpińskiego ---
+    // --- Sierpinski Triangle Drawing Algorithms ---
 
     private int DrawFilledSierpinski(byte[] pixels, int width, int height, PointD p1, PointD p2, PointD p3, int depth, int paletteIndex)
     {
@@ -361,6 +361,7 @@ public partial class MainWindow : Window
         PointD current = v1;
         PointD[] vertices = { v1, v2, v3 };
 
+        // Discard initial 20 warm-up points
         for (int i = 0; i < 20; i++)
         {
             PointD target = vertices[rand.Next(3)];
@@ -379,7 +380,7 @@ public partial class MainWindow : Window
         return pointCount;
     }
 
-    // --- Pomocnicze funkcje graficzne i matematyczne ---
+    // --- Mathematical & Drawing Helpers ---
 
     private static PointD MidPoint(PointD p1, PointD p2)
     {
@@ -392,12 +393,12 @@ public partial class MainWindow : Window
 
         return paletteIndex switch
         {
-            0 => HsvToRgb(normY * 300.0, 0.85, 1.0), // Gradient tęczy
-            1 => Color.FromRgb(0, 212, 255),          // Neonowy Cyjan
-            2 => Color.FromRgb(255, 190, 10),         // Złoty
-            3 => Color.FromRgb(0, 255, 128),          // Zielony Matrix
-            4 => Color.FromRgb(190, 70, 255),         // Purpurowy Fiolet
-            5 => HsvToRgb(normY * 60.0, 0.95, 1.0),   // Ogień
+            0 => HsvToRgb(normY * 300.0, 0.85, 1.0), // Rainbow gradient
+            1 => Color.FromRgb(0, 212, 255),          // Neon Cyan
+            2 => Color.FromRgb(255, 190, 10),         // Gold
+            3 => Color.FromRgb(0, 255, 128),          // Matrix Green
+            4 => Color.FromRgb(190, 70, 255),         // Purple Violet
+            5 => HsvToRgb(normY * 60.0, 0.95, 1.0),   // Fire
             _ => Color.FromRgb(0, 212, 255)
         };
     }

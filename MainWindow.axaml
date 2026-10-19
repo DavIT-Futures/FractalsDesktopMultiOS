@@ -4,7 +4,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         mc:Ignorable="d"
         x:Class="FractalsDesktopMultiOS.MainWindow"
-        Title="FractalsDesktopMultiOS - Multi-OS Fractal Generator (Windows / Linux / macOS)"
+        Title="FractalsDesktopMultiOS - Cross-Platform Fractal Generator (Windows / Linux / macOS)"
         Width="1100" Height="720"
         MinWidth="850" MinHeight="600"
         Background="#121214"
@@ -82,37 +82,37 @@
     </Window.Styles>
 
     <Grid RowDefinitions="*,Auto">
-        <!-- Główna zawartość -->
+        <!-- Main Content -->
         <Grid Grid.Row="0" ColumnDefinitions="340,*">
-            <!-- Panel sterowania (lewy) -->
+            <!-- Left Control Panel -->
             <Border Grid.Column="0" Background="#18181D" BorderBrush="#272732" BorderThickness="0,0,1,0" Padding="16">
                 <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
                     <StackPanel Spacing="2">
-                        <!-- Nagłówek aplikacji -->
+                        <!-- Application Header -->
                         <TextBlock Text="FractalsDesktopMultiOS" FontSize="20" FontWeight="Bold" Foreground="#00D4FF" Margin="0,0,0,2"/>
-                        <TextBlock Text="Wieloplatformowy generator fraktali (Windows • Linux • macOS)" 
+                        <TextBlock Text="Cross-Platform Fractal Generator (Windows • Linux • macOS)" 
                                    FontSize="11" Foreground="#8D8D99" TextWrapping="Wrap" Margin="0,0,0,14"/>
 
-                        <!-- Grupa 1: Algorytm -->
+                        <!-- Section 1: Algorithm & Method -->
                         <Border Classes="section">
                             <StackPanel>
-                                <TextBlock Text="ALGORYTM I METODA" Classes="sectionHeader"/>
-                                <TextBlock Text="Wybierz metodę rysowania:" Classes="label"/>
+                                <TextBlock Text="ALGORITHM &amp; METHOD" Classes="sectionHeader"/>
+                                <TextBlock Text="Select drawing method:" Classes="label"/>
                                 <ComboBox x:Name="cmbMethod" SelectedIndex="0">
-                                    <ComboBoxItem Content="Rekurencja (Wypełnione Trójkąty)"/>
-                                    <ComboBoxItem Content="Rekurencja (Kontury Trójkątów)"/>
-                                    <ComboBoxItem Content="Gra Chaosu (Losowe Punkty)"/>
+                                    <ComboBoxItem Content="Recursion (Filled Triangles)"/>
+                                    <ComboBoxItem Content="Recursion (Triangle Wireframe)"/>
+                                    <ComboBoxItem Content="Chaos Game (Random Points)"/>
                                 </ComboBox>
                             </StackPanel>
                         </Border>
 
-                        <!-- Grupa 2: Parametry -->
+                        <!-- Section 2: Parameters -->
                         <Border Classes="section">
                             <StackPanel>
-                                <TextBlock Text="PARAMETRY GENEROWANIA" Classes="sectionHeader"/>
+                                <TextBlock Text="GENERATION PARAMETERS" Classes="sectionHeader"/>
                                 
                                 <DockPanel Margin="0,0,0,2">
-                                    <TextBlock x:Name="lblParamName" Text="Głębokość rekurencji (0 - 9):" Classes="label" VerticalAlignment="Center"/>
+                                    <TextBlock x:Name="lblParamName" Text="Recursion depth (0 - 9):" Classes="label" VerticalAlignment="Center"/>
                                     <TextBox x:Name="txtParamValue" Text="6" Width="75" DockPanel.Dock="Right" 
                                              TextAlignment="Center" Background="#24242C" Foreground="#FFFFFF" 
                                              BorderBrush="#383844" CornerRadius="4" Padding="4"/>
@@ -120,37 +120,37 @@
                                 <Slider x:Name="sliderParam" Minimum="0" Maximum="9" Value="6" TickFrequency="1" IsSnapToTickEnabled="True"/>
 
                                 <DockPanel Margin="0,6,0,2">
-                                    <TextBlock Text="Rozmiar / Grubość elementu:" Classes="label" VerticalAlignment="Center"/>
+                                    <TextBlock Text="Element size / thickness:" Classes="label" VerticalAlignment="Center"/>
                                     <TextBlock x:Name="txtThicknessValue" Text="1 px" Width="40" TextAlignment="Right" Foreground="#00D4FF" VerticalAlignment="Center" DockPanel.Dock="Right"/>
                                 </DockPanel>
                                 <Slider x:Name="sliderThickness" Minimum="1" Maximum="6" Value="1" TickFrequency="1" IsSnapToTickEnabled="True"/>
                             </StackPanel>
                         </Border>
 
-                        <!-- Grupa 3: Stylizacja -->
+                        <!-- Section 3: Colors & Theme -->
                         <Border Classes="section">
                             <StackPanel>
-                                <TextBlock Text="KOLORYSTYKA I TŁO" Classes="sectionHeader"/>
-                                <TextBlock Text="Paleta kolorów fraktala:" Classes="label"/>
+                                <TextBlock Text="COLORS &amp; BACKGROUND" Classes="sectionHeader"/>
+                                <TextBlock Text="Fractal color palette:" Classes="label"/>
                                 <ComboBox x:Name="cmbPalette" SelectedIndex="0">
-                                    <ComboBoxItem Content="🌈 Tęcza / Gradient wysokości"/>
-                                    <ComboBoxItem Content="🩵 Neonowy Cyjan"/>
-                                    <ComboBoxItem Content="💛 Złoty / Bursztynowy"/>
-                                    <ComboBoxItem Content="💚 Zielony Matrix"/>
-                                    <ComboBoxItem Content="💜 Purpurowy Fiolet"/>
-                                    <ComboBoxItem Content="🔥 Ogień (Czerwono-Pomarańczowy)"/>
+                                    <ComboBoxItem Content="🌈 Rainbow / Height Gradient"/>
+                                    <ComboBoxItem Content="🩵 Neon Cyan"/>
+                                    <ComboBoxItem Content="💛 Gold / Amber"/>
+                                    <ComboBoxItem Content="💚 Matrix Green"/>
+                                    <ComboBoxItem Content="💜 Purple Violet"/>
+                                    <ComboBoxItem Content="🔥 Fire (Red-Orange)"/>
                                 </ComboBox>
 
-                                <TextBlock Text="Kolor tła:" Classes="label" Margin="0,4,0,2"/>
+                                <TextBlock Text="Background color:" Classes="label" Margin="0,4,0,2"/>
                                 <ComboBox x:Name="cmbBackground" SelectedIndex="0">
-                                    <ComboBoxItem Content="🖤 Ciemne tło (Ciemnoszary / Czarny)"/>
-                                    <ComboBoxItem Content="🤍 Jasne tło (Czysta Biel)"/>
-                                    <ComboBoxItem Content="🌌 Granat Nocy (Midnight Navy)"/>
+                                    <ComboBoxItem Content="🖤 Dark Theme (Smoky Black)"/>
+                                    <ComboBoxItem Content="🤍 Light Theme (Pure White)"/>
+                                    <ComboBoxItem Content="🌌 Midnight Navy"/>
                                 </ComboBox>
                             </StackPanel>
                         </Border>
 
-                        <!-- Przycisk Akcji START / GO -->
+                        <!-- Action Button: START / GO -->
                         <Button x:Name="btnStart" Classes="actionBtn" Margin="0,4,0,8">
                             <StackPanel Orientation="Horizontal" Spacing="8" HorizontalAlignment="Center">
                                 <TextBlock Text="▶" FontSize="15" VerticalAlignment="Center"/>
@@ -159,8 +159,8 @@
                         </Button>
 
                         <Grid ColumnDefinitions="*,*" Margin="0,0,0,6">
-                            <Button x:Name="btnReset" Content="🔄 Wyczyść" Classes="toolBtn" Grid.Column="0" Margin="0,0,4,0"/>
-                            <Button x:Name="btnSave" Content="💾 Zapisz PNG" Classes="toolBtn" Grid.Column="1" Margin="4,0,0,0"/>
+                            <Button x:Name="btnReset" Content="🔄 Clear" Classes="toolBtn" Grid.Column="0" Margin="0,0,4,0"/>
+                            <Button x:Name="btnSave" Content="💾 Save PNG" Classes="toolBtn" Grid.Column="1" Margin="4,0,0,0"/>
                         </Grid>
 
                         <ProgressBar x:Name="progressBar" Height="5" Margin="0,4,0,4" IsIndeterminate="True" IsVisible="False" Foreground="#00D4FF" Background="#24242C"/>
@@ -168,18 +168,18 @@
                 </ScrollViewer>
             </Border>
 
-            <!-- Obszar rysowania (prawy) -->
+            <!-- Drawing Area (Right) -->
             <Grid Grid.Column="1" Background="#09090A" x:Name="canvasContainer">
                 <Image x:Name="imgCanvas" Stretch="Uniform" HorizontalAlignment="Center" VerticalAlignment="Center"/>
             </Grid>
         </Grid>
 
-        <!-- Dolny pasek stanu -->
+        <!-- Bottom Status Bar -->
         <Border Grid.Row="1" Background="#18181D" BorderBrush="#272732" BorderThickness="0,1,0,0" Padding="12,6">
             <Grid ColumnDefinitions="*,Auto">
-                <TextBlock x:Name="txtStatus" Grid.Column="0" Text="Gotowy do generowania na dowolnym systemie (Windows, Linux, macOS)." 
+                <TextBlock x:Name="txtStatus" Grid.Column="0" Text="Ready to generate on any OS (Windows, Linux, macOS)." 
                            Foreground="#00D4FF" FontSize="12" VerticalAlignment="Center"/>
-                <TextBlock x:Name="txtStats" Grid.Column="1" Text="Wymiary: - | Czas: -" 
+                <TextBlock x:Name="txtStats" Grid.Column="1" Text="Resolution: - | Elapsed: -" 
                            Foreground="#8D8D99" FontSize="12" VerticalAlignment="Center"/>
             </Grid>
         </Border>

@@ -1,50 +1,47 @@
 # FractalsDesktopMultiOS
 
-Wieloplatformowa aplikacja desktopowa w języku **C# (.NET 10 / Avalonia UI)** umożliwiająca generowanie i wizualizację fraktali (w tym fraktala **Trójkąt Sierpińskiego**) z możliwością pełnej parametryzacji, wyboru palety barw i algorytmu.
+A modern, cross-platform desktop application built with **C# (.NET 10 / Avalonia UI)** for generating and rendering fractals (including the **Sierpinski Triangle**) with full parameter customization, color palette selection, and multiple generation algorithms.
 
-Dzięki wykorzystaniu **Avalonia UI** aplikacja działa i renderuje się natywnie na:
+Powered by **Avalonia UI** and the Skia rendering engine, it runs natively on:
 - 🪟 **Windows** (x64 / ARM64)
-- 🐧 **Linux** (X11 / Wayland, Ubuntu, Fedora, Debian itp.)
+- 🐧 **Linux** (X11 / Wayland, Ubuntu, Fedora, Debian, Arch, etc.)
 - 🍏 **macOS** (Apple Silicon M1/M2/M3/M4 & Intel)
 
 ---
 
-## Funkcjonalności
+## Features
 
-- **Wieloplatformowość:** Natywna wydajność graficzna oparta o silnik renderowania Skia.
-- **Algorytmy generowania:**
-  - **Rekurencja (Wypełnione Trójkąty):** Geometryczny podział powierzchni trójkąta.
-  - **Rekurencja (Kontury):** Wizualizacja siatki i krawędzi trójkątów.
-  - **Gra Chaosu (Chaos Game):** Algorytm stochastyczny generujący fraktal z losowych skoków punktu.
-- **Parametry:**
-  - Regulacja poziomu rekurencji (0–9) lub liczby punktów (do 1 000 000).
-  - Regulacja grubości linii i rozmiaru punktów (1–6 px).
-  - Dynamiczne palety kolorów (gradient tęczy, neonowy cyjan, złoty, matrix, purpura, ogień).
-  - Wybór tła (ciemny motyw, jasny, midnight navy).
-- **Wydajność:** Obliczenia asynchroniczne (`Task.Run`) i bezpośredni zapis do bufora pikseli (`WriteableBitmap`).
-- **Eksport:** Natywny, wieloplatformowy zapis wygenerowanego fraktala do pliku graficznego PNG (`StorageProvider`).
-
----
-
-## Wymagania
-
-- [.NET 10.0 SDK](https://dotnet.microsoft.com/) (lub nowszy)
+- **Cross-Platform:** Native GPU-accelerated rendering powered by Skia.
+- **Generation Algorithms:**
+  - **Recursion (Filled Triangles):** Geometric subdivision of triangles.
+  - **Recursion (Wireframe):** Outline / border visualization of triangle subdivisions.
+  - **Chaos Game (Random Points):** Stochastic fractal generation via random vertex midpoint iterations.
+- **Configurable Parameters:**
+  - Adjustable recursion depth (0–9) or point count (up to 1,000,000 points).
+  - Configurable line thickness and point radius (1–6 px).
+  - Dynamic color palettes (Rainbow / Height Gradient, Neon Cyan, Gold, Matrix Green, Purple, Fire).
+  - Background themes (Smoky Black Dark Theme, Pure White Light Theme, Midnight Navy).
+- **High Performance:** Background computation on thread pool (`Task.Run`) and direct unmanaged pixel buffer manipulation (`WriteableBitmap`).
+- **Exporting:** Cross-platform native image saving to PNG files via Avalonia's `StorageProvider`.
 
 ---
 
-## Uruchomienie
+## Prerequisites
 
-### Windows:
-```powershell
-dotnet run --project FractalsDesktopMultiOS.csproj
-```
+- [.NET 10.0 SDK](https://dotnet.microsoft.com/) (or newer)
 
-### Linux:
+---
+
+## Getting Started
+
+Clone the repository and run:
+
 ```bash
-dotnet run --project FractalsDesktopMultiOS.csproj
+dotnet run
 ```
 
-### macOS:
+Or target the project file directly:
+
 ```bash
 dotnet run --project FractalsDesktopMultiOS.csproj
 ```
