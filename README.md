@@ -1,6 +1,6 @@
-# Trójkąt Sierpińskiego (Sierpinski Triangle - C# WPF)
+# FractalsUIDesktopApp
 
-Aplikacja desktopowa w języku C# (WPF, .NET 10) umożliwiająca generowanie i wizualizację fraktala **Trójkąt Sierpińskiego** z możliwością parametryzacji i wyboru algorytmu.
+Desktopowa aplikacja w języku C# (WPF, .NET 10) umożliwiająca generowanie i wizualizację fraktali (w tym fraktala **Trójkąt Sierpińskiego**) z możliwością parametryzacji, dostosowywania palet barwnych i wyboru algorytmu.
 
 ## Funkcjonalności
 
@@ -23,6 +23,10 @@ Aplikacja desktopowa w języku C# (WPF, .NET 10) umożliwiająca generowanie i w
 
 ## Uruchomienie
 
+```powershell
+dotnet run --project FractalsUIDesktopApp.csproj
+```
+lub
 ```powershell
 dotnet run
 ```
