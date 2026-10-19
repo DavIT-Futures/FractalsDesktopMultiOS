@@ -1,0 +1,187 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        mc:Ignorable="d"
+        x:Class="FractalsDesktopMultiOS.MainWindow"
+        Title="FractalsDesktopMultiOS - Multi-OS Fractal Generator (Windows / Linux / macOS)"
+        Width="1100" Height="720"
+        MinWidth="850" MinHeight="600"
+        Background="#121214"
+        WindowStartupLocation="CenterScreen">
+
+    <Window.Styles>
+        <Style Selector="Border.section">
+            <Setter Property="Background" Value="#1C1C22"/>
+            <Setter Property="BorderBrush" Value="#2D2D38"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="CornerRadius" Value="8"/>
+            <Setter Property="Padding" Value="12"/>
+            <Setter Property="Margin" Value="0,0,0,14"/>
+        </Style>
+
+        <Style Selector="TextBlock.sectionHeader">
+            <Setter Property="Foreground" Value="#00D4FF"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
+            <Setter Property="FontSize" Value="13"/>
+            <Setter Property="Margin" Value="0,0,0,8"/>
+        </Style>
+
+        <Style Selector="TextBlock.label">
+            <Setter Property="Foreground" Value="#C4C4CC"/>
+            <Setter Property="FontSize" Value="12"/>
+            <Setter Property="Margin" Value="0,2,0,4"/>
+        </Style>
+
+        <Style Selector="ComboBox">
+            <Setter Property="Background" Value="#24242C"/>
+            <Setter Property="Foreground" Value="#FFFFFF"/>
+            <Setter Property="BorderBrush" Value="#383844"/>
+            <Setter Property="Margin" Value="0,2,0,8"/>
+            <Setter Property="HorizontalAlignment" Value="Stretch"/>
+        </Style>
+
+        <Style Selector="Slider">
+            <Setter Property="Margin" Value="0,2,0,8"/>
+        </Style>
+
+        <Style Selector="Button.actionBtn">
+            <Setter Property="Background" Value="#0088CC"/>
+            <Setter Property="Foreground" Value="#FFFFFF"/>
+            <Setter Property="BorderBrush" Value="#00D4FF"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="CornerRadius" Value="6"/>
+            <Setter Property="Padding" Value="12,10"/>
+            <Setter Property="HorizontalAlignment" Value="Stretch"/>
+            <Setter Property="FontWeight" Value="Bold"/>
+            <Setter Property="FontSize" Value="14"/>
+            <Setter Property="HorizontalContentAlignment" Value="Center"/>
+            <Setter Property="Cursor" Value="Hand"/>
+        </Style>
+
+        <Style Selector="Button.actionBtn:pointerover">
+            <Setter Property="Background" Value="#00A3F5"/>
+        </Style>
+
+        <Style Selector="Button.toolBtn">
+            <Setter Property="Background" Value="#292934"/>
+            <Setter Property="Foreground" Value="#E1E1E6"/>
+            <Setter Property="BorderBrush" Value="#3E3E4E"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="CornerRadius" Value="6"/>
+            <Setter Property="Padding" Value="10,8"/>
+            <Setter Property="HorizontalAlignment" Value="Stretch"/>
+            <Setter Property="HorizontalContentAlignment" Value="Center"/>
+            <Setter Property="Cursor" Value="Hand"/>
+        </Style>
+
+        <Style Selector="Button.toolBtn:pointerover">
+            <Setter Property="Background" Value="#383846"/>
+            <Setter Property="BorderBrush" Value="#00D4FF"/>
+        </Style>
+    </Window.Styles>
+
+    <Grid RowDefinitions="*,Auto">
+        <!-- Główna zawartość -->
+        <Grid Grid.Row="0" ColumnDefinitions="340,*">
+            <!-- Panel sterowania (lewy) -->
+            <Border Grid.Column="0" Background="#18181D" BorderBrush="#272732" BorderThickness="0,0,1,0" Padding="16">
+                <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
+                    <StackPanel Spacing="2">
+                        <!-- Nagłówek aplikacji -->
+                        <TextBlock Text="FractalsDesktopMultiOS" FontSize="20" FontWeight="Bold" Foreground="#00D4FF" Margin="0,0,0,2"/>
+                        <TextBlock Text="Wieloplatformowy generator fraktali (Windows • Linux • macOS)" 
+                                   FontSize="11" Foreground="#8D8D99" TextWrapping="Wrap" Margin="0,0,0,14"/>
+
+                        <!-- Grupa 1: Algorytm -->
+                        <Border Classes="section">
+                            <StackPanel>
+                                <TextBlock Text="ALGORYTM I METODA" Classes="sectionHeader"/>
+                                <TextBlock Text="Wybierz metodę rysowania:" Classes="label"/>
+                                <ComboBox x:Name="cmbMethod" SelectedIndex="0">
+                                    <ComboBoxItem Content="Rekurencja (Wypełnione Trójkąty)"/>
+                                    <ComboBoxItem Content="Rekurencja (Kontury Trójkątów)"/>
+                                    <ComboBoxItem Content="Gra Chaosu (Losowe Punkty)"/>
+                                </ComboBox>
+                            </StackPanel>
+                        </Border>
+
+                        <!-- Grupa 2: Parametry -->
+                        <Border Classes="section">
+                            <StackPanel>
+                                <TextBlock Text="PARAMETRY GENEROWANIA" Classes="sectionHeader"/>
+                                
+                                <DockPanel Margin="0,0,0,2">
+                                    <TextBlock x:Name="lblParamName" Text="Głębokość rekurencji (0 - 9):" Classes="label" VerticalAlignment="Center"/>
+                                    <TextBox x:Name="txtParamValue" Text="6" Width="75" DockPanel.Dock="Right" 
+                                             TextAlignment="Center" Background="#24242C" Foreground="#FFFFFF" 
+                                             BorderBrush="#383844" CornerRadius="4" Padding="4"/>
+                                </DockPanel>
+                                <Slider x:Name="sliderParam" Minimum="0" Maximum="9" Value="6" TickFrequency="1" IsSnapToTickEnabled="True"/>
+
+                                <DockPanel Margin="0,6,0,2">
+                                    <TextBlock Text="Rozmiar / Grubość elementu:" Classes="label" VerticalAlignment="Center"/>
+                                    <TextBlock x:Name="txtThicknessValue" Text="1 px" Width="40" TextAlignment="Right" Foreground="#00D4FF" VerticalAlignment="Center" DockPanel.Dock="Right"/>
+                                </DockPanel>
+                                <Slider x:Name="sliderThickness" Minimum="1" Maximum="6" Value="1" TickFrequency="1" IsSnapToTickEnabled="True"/>
+                            </StackPanel>
+                        </Border>
+
+                        <!-- Grupa 3: Stylizacja -->
+                        <Border Classes="section">
+                            <StackPanel>
+                                <TextBlock Text="KOLORYSTYKA I TŁO" Classes="sectionHeader"/>
+                                <TextBlock Text="Paleta kolorów fraktala:" Classes="label"/>
+                                <ComboBox x:Name="cmbPalette" SelectedIndex="0">
+                                    <ComboBoxItem Content="🌈 Tęcza / Gradient wysokości"/>
+                                    <ComboBoxItem Content="🩵 Neonowy Cyjan"/>
+                                    <ComboBoxItem Content="💛 Złoty / Bursztynowy"/>
+                                    <ComboBoxItem Content="💚 Zielony Matrix"/>
+                                    <ComboBoxItem Content="💜 Purpurowy Fiolet"/>
+                                    <ComboBoxItem Content="🔥 Ogień (Czerwono-Pomarańczowy)"/>
+                                </ComboBox>
+
+                                <TextBlock Text="Kolor tła:" Classes="label" Margin="0,4,0,2"/>
+                                <ComboBox x:Name="cmbBackground" SelectedIndex="0">
+                                    <ComboBoxItem Content="🖤 Ciemne tło (Ciemnoszary / Czarny)"/>
+                                    <ComboBoxItem Content="🤍 Jasne tło (Czysta Biel)"/>
+                                    <ComboBoxItem Content="🌌 Granat Nocy (Midnight Navy)"/>
+                                </ComboBox>
+                            </StackPanel>
+                        </Border>
+
+                        <!-- Przycisk Akcji START / GO -->
+                        <Button x:Name="btnStart" Classes="actionBtn" Margin="0,4,0,8">
+                            <StackPanel Orientation="Horizontal" Spacing="8" HorizontalAlignment="Center">
+                                <TextBlock Text="▶" FontSize="15" VerticalAlignment="Center"/>
+                                <TextBlock Text="START / GO" FontSize="14" FontWeight="Bold" VerticalAlignment="Center"/>
+                            </StackPanel>
+                        </Button>
+
+                        <Grid ColumnDefinitions="*,*" Margin="0,0,0,6">
+                            <Button x:Name="btnReset" Content="🔄 Wyczyść" Classes="toolBtn" Grid.Column="0" Margin="0,0,4,0"/>
+                            <Button x:Name="btnSave" Content="💾 Zapisz PNG" Classes="toolBtn" Grid.Column="1" Margin="4,0,0,0"/>
+                        </Grid>
+
+                        <ProgressBar x:Name="progressBar" Height="5" Margin="0,4,0,4" IsIndeterminate="True" IsVisible="False" Foreground="#00D4FF" Background="#24242C"/>
+                    </StackPanel>
+                </ScrollViewer>
+            </Border>
+
+            <!-- Obszar rysowania (prawy) -->
+            <Grid Grid.Column="1" Background="#09090A" x:Name="canvasContainer">
+                <Image x:Name="imgCanvas" Stretch="Uniform" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+            </Grid>
+        </Grid>
+
+        <!-- Dolny pasek stanu -->
+        <Border Grid.Row="1" Background="#18181D" BorderBrush="#272732" BorderThickness="0,1,0,0" Padding="12,6">
+            <Grid ColumnDefinitions="*,Auto">
+                <TextBlock x:Name="txtStatus" Grid.Column="0" Text="Gotowy do generowania na dowolnym systemie (Windows, Linux, macOS)." 
+                           Foreground="#00D4FF" FontSize="12" VerticalAlignment="Center"/>
+                <TextBlock x:Name="txtStats" Grid.Column="1" Text="Wymiary: - | Czas: -" 
+                           Foreground="#8D8D99" FontSize="12" VerticalAlignment="Center"/>
+            </Grid>
+        </Border>
+    </Grid>
+</Window>
