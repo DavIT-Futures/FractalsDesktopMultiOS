@@ -18,6 +18,16 @@ public partial class MainWindow : Window
     private bool _isUpdatingUi = false;
     private bool _isGenerating = false;
 
+    // Mandelbrot Presets: (CenterX, CenterY, Width)
+    private readonly (double CenterX, double CenterY, double Width)[] _mandelbrotPresets =
+    {
+        (-0.75, 0.0, 3.2),                                                          // Full View
+        (-0.743643887037158704752191506114774, 0.131825904205311970493132056385139, 0.005), // Seahorse Valley
+        (0.275, 0.0, 0.08),                                                         // Elephant Valley
+        (-1.768, 0.001, 0.05),                                                      // Mini Mandelbrot
+        (-0.088, 0.654, 0.03)                                                       // Triple Spiral
+    };
+
     public MainWindow()
     {
         InitializeComponent();
@@ -31,7 +41,10 @@ public partial class MainWindow : Window
         btnReset.Click += BtnReset_Click;
         btnSave.Click += BtnSave_Click;
 
+        cmbFractalType.SelectionChanged += CmbFractalType_SelectionChanged;
         cmbMethod.SelectionChanged += CmbMethod_SelectionChanged;
+        cmbPreset.SelectionChanged += CmbPreset_SelectionChanged;
+
         sliderParam.ValueChanged += SliderParam_ValueChanged;
         sliderThickness.ValueChanged += SliderThickness_ValueChanged;
         txtParamValue.TextChanged += TxtParamValue_TextChanged;
@@ -39,13 +52,66 @@ public partial class MainWindow : Window
 
     private void MainWindow_Loaded(object? sender, RoutedEventArgs e)
     {
-        UpdateParamBounds();
+        UpdateFractalTypeOptions();
         // Initial automatic fractal rendering
         _ = GenerateFractalAsync();
     }
 
+    private void CmbFractalType_SelectionChanged(object? sender, SelectionChangedEventArgs e)
+    {
+        if (!IsInitialized) return;
+        UpdateFractalTypeOptions();
+    }
+
     private void CmbMethod_SelectionChanged(object? sender, SelectionChangedEventArgs e)
     {
+        if (!IsInitialized) return;
+        UpdateParamBounds();
+    }
+
+    private void CmbPreset_SelectionChanged(object? sender, SelectionChangedEventArgs e)
+    {
+        // Preset selected for Mandelbrot
+    }
+
+    private void UpdateFractalTypeOptions()
+    {
+        _isUpdatingUi = true;
+        int fractalType = cmbFractalType.SelectedIndex;
+
+        cmbMethod.Items.Clear();
+
+        if (fractalType == 0)
+        {
+            // Sierpinski Triangle
+            panelPreset.IsVisible = false;
+            cmbMethod.Items.Add(new ComboBoxItem { Content = "Recursion (Filled Triangles)" });
+            cmbMethod.Items.Add(new ComboBoxItem { Content = "Recursion (Triangle Wireframe)" });
+            cmbMethod.Items.Add(new ComboBoxItem { Content = "Chaos Game (Random Points)" });
+            cmbMethod.SelectedIndex = 0;
+
+            lblSecondaryParam.Text = "Element size / thickness:";
+            sliderThickness.Minimum = 1;
+            sliderThickness.Maximum = 6;
+            sliderThickness.Value = 1;
+            txtThicknessValue.Text = "1 px";
+        }
+        else
+        {
+            // Mandelbrot Set
+            panelPreset.IsVisible = true;
+            cmbMethod.Items.Add(new ComboBoxItem { Content = "Smooth Continuous Shading" });
+            cmbMethod.Items.Add(new ComboBoxItem { Content = "Classic Escape-Time Bands" });
+            cmbMethod.SelectedIndex = 0;
+
+            lblSecondaryParam.Text = "Color cycle frequency:";
+            sliderThickness.Minimum = 1;
+            sliderThickness.Maximum = 20;
+            sliderThickness.Value = 5;
+            txtThicknessValue.Text = "5x";
+        }
+
+        _isUpdatingUi = false;
         UpdateParamBounds();
     }
 
@@ -54,45 +120,69 @@ public partial class MainWindow : Window
         if (lblParamName == null || sliderParam == null || txtParamValue == null) return;
 
         _isUpdatingUi = true;
+        int fractalType = cmbFractalType.SelectedIndex;
         int methodIndex = cmbMethod.SelectedIndex;
-        if (methodIndex == 0 || methodIndex == 1)
-        {
-            // Recursion
-            lblParamName.Text = "Recursion depth (0 - 9):";
-            sliderParam.Minimum = 0;
-            sliderParam.Maximum = 9;
-            sliderParam.TickFrequency = 1;
-            sliderParam.IsSnapToTickEnabled = true;
 
-            if (sliderParam.Value > 9) sliderParam.Value = 6;
-            txtParamValue.Text = ((int)sliderParam.Value).ToString();
+        if (fractalType == 0)
+        {
+            // Sierpinski
+            if (methodIndex == 0 || methodIndex == 1)
+            {
+                lblParamName.Text = "Recursion depth (0 - 9):";
+                sliderParam.Minimum = 0;
+                sliderParam.Maximum = 9;
+                sliderParam.TickFrequency = 1;
+                sliderParam.IsSnapToTickEnabled = true;
+
+                if (sliderParam.Value > 9) sliderParam.Value = 6;
+                txtParamValue.Text = ((int)sliderParam.Value).ToString();
+            }
+            else
+            {
+                // Chaos Game
+                lblParamName.Text = "Number of points:";
+                sliderParam.Minimum = 5000;
+                sliderParam.Maximum = 1000000;
+                sliderParam.TickFrequency = 5000;
+                sliderParam.IsSnapToTickEnabled = false;
+
+                if (sliderParam.Value < 5000) sliderParam.Value = 150000;
+                txtParamValue.Text = string.Format("{0:N0}", (int)sliderParam.Value);
+            }
         }
         else
         {
-            // Chaos Game
-            lblParamName.Text = "Number of points:";
-            sliderParam.Minimum = 5000;
-            sliderParam.Maximum = 1000000;
-            sliderParam.TickFrequency = 5000;
+            // Mandelbrot Set
+            lblParamName.Text = "Max Iterations (50 - 2000):";
+            sliderParam.Minimum = 50;
+            sliderParam.Maximum = 2000;
+            sliderParam.TickFrequency = 25;
             sliderParam.IsSnapToTickEnabled = false;
 
-            if (sliderParam.Value < 5000) sliderParam.Value = 150000;
-            txtParamValue.Text = string.Format("{0:N0}", (int)sliderParam.Value);
+            if (sliderParam.Value < 50 || sliderParam.Value > 2000) sliderParam.Value = 300;
+            txtParamValue.Text = ((int)sliderParam.Value).ToString();
         }
+
         _isUpdatingUi = false;
     }
 
     private void SliderParam_ValueChanged(object? sender, Avalonia.Controls.Primitives.RangeBaseValueChangedEventArgs e)
     {
         if (_isUpdatingUi || txtParamValue == null) return;
+        int fractalType = cmbFractalType.SelectedIndex;
         int methodIndex = cmbMethod.SelectedIndex;
-        if (methodIndex == 0 || methodIndex == 1)
+
+        if (fractalType == 0 && (methodIndex == 0 || methodIndex == 1))
         {
             txtParamValue.Text = ((int)e.NewValue).ToString();
         }
-        else
+        else if (fractalType == 0 && methodIndex == 2)
         {
             txtParamValue.Text = string.Format("{0:N0}", (int)e.NewValue);
+        }
+        else
+        {
+            txtParamValue.Text = ((int)e.NewValue).ToString();
         }
     }
 
@@ -115,7 +205,10 @@ public partial class MainWindow : Window
     {
         if (txtThicknessValue != null)
         {
-            txtThicknessValue.Text = $"{(int)e.NewValue} px";
+            if (cmbFractalType.SelectedIndex == 0)
+                txtThicknessValue.Text = $"{(int)e.NewValue} px";
+            else
+                txtThicknessValue.Text = $"{(int)e.NewValue}x";
         }
     }
 
@@ -158,11 +251,15 @@ public partial class MainWindow : Window
         var topLevel = TopLevel.GetTopLevel(this);
         if (topLevel == null) return;
 
+        string defaultName = cmbFractalType.SelectedIndex == 0
+            ? "FractalsDesktopMultiOS_Sierpinski.png"
+            : "FractalsDesktopMultiOS_Mandelbrot.png";
+
         var file = await topLevel.StorageProvider.SaveFilePickerAsync(new FilePickerSaveOptions
         {
             Title = "Save Fractal Image (PNG)",
             DefaultExtension = "png",
-            SuggestedFileName = "FractalsDesktopMultiOS_Sierpinski.png",
+            SuggestedFileName = defaultName,
             FileTypeChoices = new[]
             {
                 new FilePickerFileType("PNG Image Files (*.png)") { Patterns = new[] { "*.png" } }
@@ -203,10 +300,12 @@ public partial class MainWindow : Window
             if (width < 200) width = 1200;
             if (height < 200) height = 900;
 
-            int methodIndex = cmbMethod.SelectedIndex;
+            int fractalType = cmbFractalType.SelectedIndex;
+            int methodIndex = Math.Max(0, cmbMethod.SelectedIndex);
             int paramValue = (int)sliderParam.Value;
-            int thickness = (int)sliderThickness.Value;
+            int secondaryParam = (int)sliderThickness.Value;
             int paletteIndex = cmbPalette.SelectedIndex;
+            int presetIndex = Math.Clamp(cmbPreset.SelectedIndex, 0, _mandelbrotPresets.Length - 1);
             Color bgColor = GetBackgroundColor();
 
             Stopwatch sw = Stopwatch.StartNew();
@@ -215,46 +314,50 @@ public partial class MainWindow : Window
             {
                 byte[] pixels = new byte[width * height * 4];
 
-                // Fill background color
-                for (int i = 0; i < pixels.Length; i += 4)
+                if (fractalType == 0)
                 {
-                    pixels[i] = bgColor.B;
-                    pixels[i + 1] = bgColor.G;
-                    pixels[i + 2] = bgColor.R;
-                    pixels[i + 3] = 255;
-                }
+                    // --- SIERPINSKI TRIANGLE ---
+                    // Fill background
+                    for (int i = 0; i < pixels.Length; i += 4)
+                    {
+                        pixels[i] = bgColor.B;
+                        pixels[i + 1] = bgColor.G;
+                        pixels[i + 2] = bgColor.R;
+                        pixels[i + 3] = 255;
+                    }
 
-                // Calculate main equilateral triangle vertices
-                double margin = 30;
-                double triangleHeight = height - margin * 2;
-                double triangleWidth = triangleHeight * 2.0 / Math.Sqrt(3);
+                    // Calculate equilateral triangle vertices
+                    double margin = 30;
+                    double triangleHeight = height - margin * 2;
+                    double triangleWidth = triangleHeight * 2.0 / Math.Sqrt(3);
 
-                if (triangleWidth > width - margin * 2)
-                {
-                    triangleWidth = width - margin * 2;
-                    triangleHeight = triangleWidth * Math.Sqrt(3) / 2.0;
-                }
+                    if (triangleWidth > width - margin * 2)
+                    {
+                        triangleWidth = width - margin * 2;
+                        triangleHeight = triangleWidth * Math.Sqrt(3) / 2.0;
+                    }
 
-                PointD p1 = new PointD(width / 2.0, (height - triangleHeight) / 2.0); // Top vertex
-                PointD p2 = new PointD(p1.X - triangleWidth / 2.0, p1.Y + triangleHeight); // Bottom left
-                PointD p3 = new PointD(p1.X + triangleWidth / 2.0, p1.Y + triangleHeight); // Bottom right
+                    PointD p1 = new PointD(width / 2.0, (height - triangleHeight) / 2.0); // Top vertex
+                    PointD p2 = new PointD(p1.X - triangleWidth / 2.0, p1.Y + triangleHeight); // Bottom left
+                    PointD p3 = new PointD(p1.X + triangleWidth / 2.0, p1.Y + triangleHeight); // Bottom right
 
-                int count = 0;
+                    int count = 0;
+                    if (methodIndex == 0)
+                        count = DrawFilledSierpinski(pixels, width, height, p1, p2, p3, paramValue, paletteIndex);
+                    else if (methodIndex == 1)
+                        count = DrawWireframeSierpinski(pixels, width, height, p1, p2, p3, paramValue, secondaryParam, paletteIndex);
+                    else
+                        count = DrawChaosGame(pixels, width, height, p1, p2, p3, paramValue, secondaryParam, paletteIndex);
 
-                if (methodIndex == 0)
-                {
-                    count = DrawFilledSierpinski(pixels, width, height, p1, p2, p3, paramValue, paletteIndex);
-                }
-                else if (methodIndex == 1)
-                {
-                    count = DrawWireframeSierpinski(pixels, width, height, p1, p2, p3, paramValue, thickness, paletteIndex);
+                    return (pixels, count);
                 }
                 else
                 {
-                    count = DrawChaosGame(pixels, width, height, p1, p2, p3, paramValue, thickness, paletteIndex);
+                    // --- MANDELBROT SET ---
+                    var preset = _mandelbrotPresets[presetIndex];
+                    int count = DrawMandelbrot(pixels, width, height, preset.CenterX, preset.CenterY, preset.Width, paramValue, methodIndex, secondaryParam, paletteIndex, bgColor);
+                    return (pixels, count);
                 }
-
-                return (pixels, count);
             });
 
             sw.Stop();
@@ -293,6 +396,101 @@ public partial class MainWindow : Window
             2 => Color.FromRgb(13, 17, 23), // Midnight Navy
             _ => Color.FromRgb(9, 9, 10)     // Smoky Black
         };
+    }
+
+    // --- Mandelbrot Set Parallel Rendering Algorithm ---
+
+    private int DrawMandelbrot(byte[] pixels, int width, int height, double centerX, double centerY, double baseWidth,
+                               int maxIter, int modeIndex, int cycleFreq, int paletteIndex, Color bgColor)
+    {
+        double aspect = (double)width / height;
+        double viewWidth = baseWidth;
+        double viewHeight = viewWidth / aspect;
+
+        double xMin = centerX - viewWidth / 2.0;
+        double xMax = centerX + viewWidth / 2.0;
+        double yMin = centerY - viewHeight / 2.0;
+        double yMax = centerY + viewHeight / 2.0;
+
+        double xStep = (xMax - xMin) / width;
+        double yStep = (yMax - yMin) / height;
+
+        Parallel.For(0, height, y =>
+        {
+            double c_im = yMin + y * yStep;
+            int rowOffset = y * width * 4;
+
+            for (int x = 0; x < width; x++)
+            {
+                double c_re = xMin + x * xStep;
+
+                // Cardioid and period-2 bulb fast optimization check
+                double crMinusQuarter = c_re - 0.25;
+                double q = crMinusQuarter * crMinusQuarter + c_im * c_im;
+                if (q * (q + crMinusQuarter) <= 0.25 * c_im * c_im ||
+                    (c_re + 1.0) * (c_re + 1.0) + c_im * c_im <= 0.0625)
+                {
+                    // Inside set interior
+                    int pIdx = rowOffset + x * 4;
+                    pixels[pIdx] = bgColor.B;
+                    pixels[pIdx + 1] = bgColor.G;
+                    pixels[pIdx + 2] = bgColor.R;
+                    pixels[pIdx + 3] = 255;
+                    continue;
+                }
+
+                double z_re = 0.0;
+                double z_im = 0.0;
+                double z_re2 = 0.0;
+                double z_im2 = 0.0;
+                int iter = 0;
+
+                while (z_re2 + z_im2 <= 4.0 && iter < maxIter)
+                {
+                    z_im = 2.0 * z_re * z_im + c_im;
+                    z_re = z_re2 - z_im2 + c_re;
+                    z_re2 = z_re * z_re;
+                    z_im2 = z_im * z_im;
+                    iter++;
+                }
+
+                int pixelIdx = rowOffset + x * 4;
+
+                if (iter == maxIter)
+                {
+                    // Inside Mandelbrot Set (Black)
+                    pixels[pixelIdx] = 0;
+                    pixels[pixelIdx + 1] = 0;
+                    pixels[pixelIdx + 2] = 0;
+                    pixels[pixelIdx + 3] = 255;
+                }
+                else
+                {
+                    Color color;
+                    if (modeIndex == 0) // Smooth continuous normalized shading
+                    {
+                        double modulus = Math.Sqrt(z_re2 + z_im2);
+                        double nu = iter + 1.0 - Math.Log(Math.Max(1.0, Math.Log(modulus))) / Math.Log(2.0);
+                        double norm = (nu / maxIter * cycleFreq) % 1.0;
+                        if (norm < 0) norm += 1.0;
+                        color = GetColorForNormalizedValue(norm, paletteIndex);
+                    }
+                    else // Classic escape-time bands
+                    {
+                        double norm = ((double)iter / Math.Min(maxIter, 80) * (cycleFreq / 2.0)) % 1.0;
+                        if (norm < 0) norm += 1.0;
+                        color = GetColorForNormalizedValue(norm, paletteIndex);
+                    }
+
+                    pixels[pixelIdx] = color.B;
+                    pixels[pixelIdx + 1] = color.G;
+                    pixels[pixelIdx + 2] = color.R;
+                    pixels[pixelIdx + 3] = 255;
+                }
+            }
+        });
+
+        return width * height;
     }
 
     // --- Sierpinski Triangle Drawing Algorithms ---
@@ -361,7 +559,6 @@ public partial class MainWindow : Window
         PointD current = v1;
         PointD[] vertices = { v1, v2, v3 };
 
-        // Discard initial 20 warm-up points
         for (int i = 0; i < 20; i++)
         {
             PointD target = vertices[rand.Next(3)];
@@ -380,7 +577,7 @@ public partial class MainWindow : Window
         return pointCount;
     }
 
-    // --- Mathematical & Drawing Helpers ---
+    // --- Mathematical & Palette Helpers ---
 
     private static PointD MidPoint(PointD p1, PointD p2)
     {
@@ -390,15 +587,21 @@ public partial class MainWindow : Window
     private static Color GetColorForPoint(PointD pt, double totalHeight, int paletteIndex)
     {
         double normY = Math.Clamp(pt.Y / totalHeight, 0.0, 1.0);
+        return GetColorForNormalizedValue(normY, paletteIndex);
+    }
+
+    private static Color GetColorForNormalizedValue(double t, int paletteIndex)
+    {
+        t = Math.Clamp(t, 0.0, 1.0);
 
         return paletteIndex switch
         {
-            0 => HsvToRgb(normY * 300.0, 0.85, 1.0), // Rainbow gradient
-            1 => Color.FromRgb(0, 212, 255),          // Neon Cyan
-            2 => Color.FromRgb(255, 190, 10),         // Gold
-            3 => Color.FromRgb(0, 255, 128),          // Matrix Green
-            4 => Color.FromRgb(190, 70, 255),         // Purple Violet
-            5 => HsvToRgb(normY * 60.0, 0.95, 1.0),   // Fire
+            0 => HsvToRgb(t * 360.0, 0.85, 1.0),                                       // Rainbow
+            1 => Color.FromRgb((byte)(t * 60), (byte)(160 + t * 95), 255),             // Neon Cyan
+            2 => Color.FromRgb(255, (byte)(140 + t * 115), (byte)(t * 50)),            // Gold / Amber
+            3 => Color.FromRgb((byte)(t * 40), (byte)(180 + t * 75), (byte)(t * 80)),  // Matrix Green
+            4 => Color.FromRgb((byte)(160 + t * 95), (byte)(t * 60), 255),             // Purple Violet
+            5 => HsvToRgb(t * 60.0, 0.95, 1.0),                                        // Fire
             _ => Color.FromRgb(0, 212, 255)
         };
     }

@@ -1,6 +1,6 @@
 # FractalsDesktopMultiOS
 
-A modern, cross-platform desktop application built with **C# (.NET 10 / Avalonia UI)** for generating and rendering fractals (including the **Sierpinski Triangle**) with full parameter customization, color palette selection, and multiple generation algorithms.
+A modern, high-performance, cross-platform desktop application built with **C# (.NET 10 / Avalonia UI)** for generating and exploring fractals — including the **Sierpinski Triangle** and the **Mandelbrot Set** — with full parameter customization, rich color palette selection, and multiple generation algorithms.
 
 Powered by **Avalonia UI** and the Skia rendering engine, it runs natively on:
 - 🪟 **Windows** (x64 / ARM64)
@@ -9,20 +9,40 @@ Powered by **Avalonia UI** and the Skia rendering engine, it runs natively on:
 
 ---
 
-## Features
+## Supported Fractals & Algorithms
 
-- **Cross-Platform:** Native GPU-accelerated rendering powered by Skia.
-- **Generation Algorithms:**
+### 1. Mandelbrot Set
+- **Parallel Multi-Threaded Engine:** Computes millions of pixels simultaneously using `Parallel.For`.
+- **Modes:**
+  - **Smooth Continuous Shading:** Normalized iteration count algorithm avoiding harsh color stepping.
+  - **Classic Escape-Time Bands:** Discrete color cycling.
+- **View Presets:**
+  - `Full View (Classic)`
+  - `Seahorse Valley`
+  - `Elephant Valley`
+  - `Mini Mandelbrot`
+  - `Triple Spiral`
+- **Configurable Parameters:**
+  - Max iterations (50 to 2,000).
+  - Color cycle frequency multiplier.
+
+### 2. Sierpinski Triangle
+- **Algorithms:**
   - **Recursion (Filled Triangles):** Geometric subdivision of triangles.
   - **Recursion (Wireframe):** Outline / border visualization of triangle subdivisions.
   - **Chaos Game (Random Points):** Stochastic fractal generation via random vertex midpoint iterations.
 - **Configurable Parameters:**
-  - Adjustable recursion depth (0–9) or point count (up to 1,000,000 points).
-  - Configurable line thickness and point radius (1–6 px).
-  - Dynamic color palettes (Rainbow / Height Gradient, Neon Cyan, Gold, Matrix Green, Purple, Fire).
-  - Background themes (Smoky Black Dark Theme, Pure White Light Theme, Midnight Navy).
-- **High Performance:** Background computation on thread pool (`Task.Run`) and direct unmanaged pixel buffer manipulation (`WriteableBitmap`).
-- **Exporting:** Cross-platform native image saving to PNG files via Avalonia's `StorageProvider`.
+  - Recursion depth (0 to 9) or point count (up to 1,000,000 points).
+  - Line thickness and point radius (1 to 6 px).
+
+---
+
+## Visual Themes & Exporting
+
+- **Dynamic Palettes:** Rainbow / Height Gradient, Neon Cyan, Gold / Amber, Matrix Green, Purple Violet, Fire.
+- **Backgrounds:** Smoky Black (Dark Theme), Pure White (Light Theme), Midnight Navy.
+- **Full Screen / Maximized Window:** Opens maximized automatically on launch.
+- **Cross-Platform Image Export:** Save generated fractals to PNG using the native platform dialog.
 
 ---
 
@@ -34,14 +54,8 @@ Powered by **Avalonia UI** and the Skia rendering engine, it runs natively on:
 
 ## Getting Started
 
-Clone the repository and run:
+Run with dotnet:
 
 ```bash
 dotnet run
-```
-
-Or target the project file directly:
-
-```bash
-dotnet run --project FractalsDesktopMultiOS.csproj
 ```

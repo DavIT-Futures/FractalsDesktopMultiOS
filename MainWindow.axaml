@@ -5,8 +5,9 @@
         mc:Ignorable="d"
         x:Class="FractalsDesktopMultiOS.MainWindow"
         Title="FractalsDesktopMultiOS - Cross-Platform Fractal Generator (Windows / Linux / macOS)"
-        Width="1100" Height="720"
+        Width="1280" Height="800"
         MinWidth="850" MinHeight="600"
+        WindowState="Maximized"
         Background="#121214"
         WindowStartupLocation="CenterScreen">
 
@@ -83,7 +84,7 @@
 
     <Grid RowDefinitions="*,Auto">
         <!-- Main Content -->
-        <Grid Grid.Row="0" ColumnDefinitions="340,*">
+        <Grid Grid.Row="0" ColumnDefinitions="350,*">
             <!-- Left Control Panel -->
             <Border Grid.Column="0" Background="#18181D" BorderBrush="#272732" BorderThickness="0,0,1,0" Padding="16">
                 <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
@@ -93,16 +94,31 @@
                         <TextBlock Text="Cross-Platform Fractal Generator (Windows • Linux • macOS)" 
                                    FontSize="11" Foreground="#8D8D99" TextWrapping="Wrap" Margin="0,0,0,14"/>
 
-                        <!-- Section 1: Algorithm & Method -->
+                        <!-- Section 1: Fractal & Algorithm -->
                         <Border Classes="section">
                             <StackPanel>
-                                <TextBlock Text="ALGORITHM &amp; METHOD" Classes="sectionHeader"/>
-                                <TextBlock Text="Select drawing method:" Classes="label"/>
-                                <ComboBox x:Name="cmbMethod" SelectedIndex="0">
-                                    <ComboBoxItem Content="Recursion (Filled Triangles)"/>
-                                    <ComboBoxItem Content="Recursion (Triangle Wireframe)"/>
-                                    <ComboBoxItem Content="Chaos Game (Random Points)"/>
+                                <TextBlock Text="FRACTAL &amp; ALGORITHM" Classes="sectionHeader"/>
+                                
+                                <TextBlock Text="Select fractal type:" Classes="label"/>
+                                <ComboBox x:Name="cmbFractalType" SelectedIndex="0">
+                                    <ComboBoxItem Content="Sierpinski Triangle"/>
+                                    <ComboBoxItem Content="Mandelbrot Set"/>
                                 </ComboBox>
+
+                                <TextBlock x:Name="lblMethod" Text="Select drawing method:" Classes="label"/>
+                                <ComboBox x:Name="cmbMethod" SelectedIndex="0"/>
+
+                                <!-- View Preset (visible for Mandelbrot) -->
+                                <StackPanel x:Name="panelPreset" IsVisible="False">
+                                    <TextBlock Text="View preset / location:" Classes="label"/>
+                                    <ComboBox x:Name="cmbPreset" SelectedIndex="0">
+                                        <ComboBoxItem Content="Full View (Classic)"/>
+                                        <ComboBoxItem Content="Seahorse Valley"/>
+                                        <ComboBoxItem Content="Elephant Valley"/>
+                                        <ComboBoxItem Content="Mini Mandelbrot"/>
+                                        <ComboBoxItem Content="Triple Spiral"/>
+                                    </ComboBox>
+                                </StackPanel>
                             </StackPanel>
                         </Border>
 
@@ -113,15 +129,15 @@
                                 
                                 <DockPanel Margin="0,0,0,2">
                                     <TextBlock x:Name="lblParamName" Text="Recursion depth (0 - 9):" Classes="label" VerticalAlignment="Center"/>
-                                    <TextBox x:Name="txtParamValue" Text="6" Width="75" DockPanel.Dock="Right" 
+                                    <TextBox x:Name="txtParamValue" Text="6" Width="80" DockPanel.Dock="Right" 
                                              TextAlignment="Center" Background="#24242C" Foreground="#FFFFFF" 
                                              BorderBrush="#383844" CornerRadius="4" Padding="4"/>
                                 </DockPanel>
                                 <Slider x:Name="sliderParam" Minimum="0" Maximum="9" Value="6" TickFrequency="1" IsSnapToTickEnabled="True"/>
 
                                 <DockPanel Margin="0,6,0,2">
-                                    <TextBlock Text="Element size / thickness:" Classes="label" VerticalAlignment="Center"/>
-                                    <TextBlock x:Name="txtThicknessValue" Text="1 px" Width="40" TextAlignment="Right" Foreground="#00D4FF" VerticalAlignment="Center" DockPanel.Dock="Right"/>
+                                    <TextBlock x:Name="lblSecondaryParam" Text="Element size / thickness:" Classes="label" VerticalAlignment="Center"/>
+                                    <TextBlock x:Name="txtThicknessValue" Text="1 px" Width="45" TextAlignment="Right" Foreground="#00D4FF" VerticalAlignment="Center" DockPanel.Dock="Right"/>
                                 </DockPanel>
                                 <Slider x:Name="sliderThickness" Minimum="1" Maximum="6" Value="1" TickFrequency="1" IsSnapToTickEnabled="True"/>
                             </StackPanel>
