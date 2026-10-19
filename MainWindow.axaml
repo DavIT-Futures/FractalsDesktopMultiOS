@@ -103,6 +103,9 @@
                                 <ComboBox x:Name="cmbFractalType" SelectedIndex="0">
                                     <ComboBoxItem Content="Sierpinski Triangle"/>
                                     <ComboBoxItem Content="Mandelbrot Set"/>
+                                    <ComboBoxItem Content="Julia Set"/>
+                                    <ComboBoxItem Content="Barnsley Fern"/>
+                                    <ComboBoxItem Content="Burning Ship"/>
                                 </ComboBox>
 
                                 <TextBlock x:Name="lblMethod" Text="Select drawing method:" Classes="label"/>
