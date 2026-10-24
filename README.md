@@ -1,5 +1,10 @@
 # FractalsDesktopMultiOS
 
+[![.NET 10](https://img.shields.io/badge/.NET-10.0-512BD4?logo=dotnet&logoColor=white)](https://dotnet.microsoft.com/)
+[![Avalonia UI](https://img.shields.io/badge/Avalonia-12.1-8C4FFF?logo=avalonia&logoColor=white)](https://avaloniaui.net/)
+[![Platform](https://img.shields.io/badge/Platform-Windows%20%7C%20Linux%20%7C%20macOS-blue)](https://github.com/DavIT-Futures/FractalsDesktopMultiOS)
+[![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
+
 A modern, high-performance, cross-platform desktop application built with **C# (.NET 10 / Avalonia UI)** for generating and exploring iconic fractals with full parameter customization, rich color palette selection, view presets, and parallel multi-threaded rendering.
 
 Powered by **Avalonia UI** and the Skia graphics engine, it runs natively on:
