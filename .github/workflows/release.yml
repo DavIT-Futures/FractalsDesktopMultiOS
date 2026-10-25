@@ -11,26 +11,26 @@ permissions:
 
 jobs:
   build:
-    name: Build ${{ matrix.output_name }}
+    name: Build ${{ matrix.platform }}
     strategy:
       fail-fast: false
       matrix:
         include:
           - os: windows-latest
             rid: win-x64
-            output_name: FractalsDesktopMultiOS-windows-x64
+            platform: windows-x64
             archive_ext: zip
           - os: ubuntu-latest
             rid: linux-x64
-            output_name: FractalsDesktopMultiOS-linux-x64
+            platform: linux-x64
             archive_ext: tar.gz
           - os: macos-latest
             rid: osx-arm64
-            output_name: FractalsDesktopMultiOS-macos-arm64
+            platform: macos-arm64
             archive_ext: tar.gz
           - os: macos-13
             rid: osx-x64
-            output_name: FractalsDesktopMultiOS-macos-x64
+            platform: macos-x64
             archive_ext: tar.gz
     runs-on: ${{ matrix.os }}
     steps:
@@ -52,15 +52,22 @@ jobs:
       - name: Archive (Windows)
         if: matrix.os == 'windows-latest'
         shell: pwsh
-        run: Compress-Archive -Path ./publish/* -DestinationPath ./${{ matrix.output_name }}.zip -Force
+        run: |
+          $ver = if ("${{ github.ref_name }}") { "${{ github.ref_name }}" } else { "latest" }
+          $filename = "FractalsDesktopMultiOS-$ver-${{ matrix.platform }}.zip"
+          Compress-Archive -Path ./publish/* -DestinationPath ./$filename -Force
 
       - name: Archive (Linux / macOS)
         if: matrix.os != 'windows-latest'
         shell: bash
-        run: tar -czvf ./${{ matrix.output_name }}.tar.gz -C ./publish .
+        run: |
+          VER="${{ github.ref_name }}"
+          [ -z "$VER" ] && VER="latest"
+          FILENAME="FractalsDesktopMultiOS-${VER}-${{ matrix.platform }}.tar.gz"
+          tar -czvf "./$FILENAME" -C ./publish .
 
       - name: Upload binaries to Release
         uses: softprops/action-gh-release@v2
         if: startsWith(github.ref, 'refs/tags/')
         with:
-          files: ./${{ matrix.output_name }}.${{ matrix.archive_ext }}
+          files: ./FractalsDesktopMultiOS-${{ github.ref_name }}-${{ matrix.platform }}.${{ matrix.archive_ext }}
