@@ -1,6 +1,7 @@
 using System;
 using System.Diagnostics;
 using System.IO;
+using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 using Avalonia;
 using Avalonia.Controls;
@@ -493,6 +494,10 @@ public partial class MainWindow : Window
         }
     }
 
+    /// <summary>
+    /// Fills the raw 32-bit BGRA pixel buffer with the selected canvas background color.
+    /// </summary>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     private static void FillBackground(byte[] pixels, Color bgColor)
     {
         for (int i = 0; i < pixels.Length; i += 4)
@@ -504,6 +509,7 @@ public partial class MainWindow : Window
         }
     }
 
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     private Color GetBackgroundColor()
     {
         return cmbBackground.SelectedIndex switch
