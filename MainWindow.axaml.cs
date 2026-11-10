@@ -1065,14 +1065,38 @@ public partial class MainWindow : Window
     }
 }
 
+/// <summary>
+/// Represents an immutable 2D Cartesian point with double-precision coordinates for fractal geometry calculations.
+/// </summary>
 public readonly struct PointD
 {
+    /// <summary>
+    /// Gets the horizontal X coordinate.
+    /// </summary>
     public double X { get; }
+
+    /// <summary>
+    /// Gets the vertical Y coordinate.
+    /// </summary>
     public double Y { get; }
 
+    /// <summary>
+    /// Initializes a new instance of the <see cref="PointD"/> struct.
+    /// </summary>
+    /// <param name="x">The horizontal coordinate.</param>
+    /// <param name="y">The vertical coordinate.</param>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public PointD(double x, double y)
     {
         X = x;
         Y = y;
     }
+
+    /// <summary>
+    /// Computes the midpoint between this point and another point.
+    /// </summary>
+    /// <param name="other">The other coordinate point.</param>
+    /// <returns>The midpoint between the two coordinates.</returns>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public PointD Midpoint(PointD other) => new((X + other.X) * 0.5, (Y + other.Y) * 0.5);
 }
