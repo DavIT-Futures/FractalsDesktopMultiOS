@@ -967,6 +967,10 @@ public partial class MainWindow : Window
         };
     }
 
+    /// <summary>
+    /// Writes a 32-bit BGRA pixel color value to the destination buffer with bounds validation.
+    /// </summary>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     private static void SetPixel(byte[] pixels, int width, int height, int x, int y, Color color)
     {
         if (x < 0 || x >= width || y < 0 || y >= height) return;
@@ -977,6 +981,10 @@ public partial class MainWindow : Window
         pixels[index + 3] = 255;
     }
 
+    /// <summary>
+    /// Renders a rasterized circular dot into the pixel buffer.
+    /// </summary>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     private static void DrawDot(byte[] pixels, int width, int height, int cx, int cy, Color color, int radius)
     {
         if (radius <= 1)
